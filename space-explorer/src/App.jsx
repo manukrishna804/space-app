@@ -3,6 +3,9 @@ import Home from "./Home.jsx";
 import Choose from "./Choose.jsx";
 import Kids from "./kids.jsx";
 import Rocket from "./kids_section/rocket.jsx";
+import SpaceVideoSunny from "./kids_section/SpaceVideoQuizSunny.jsx";
+import SpaceHuman from "./kids_section/SpaceLearningFlow.jsx";
+import OtherHome from "./others_homepage.jsx";
 export default function App() {
   return (
     <Routes>
@@ -10,6 +13,10 @@ export default function App() {
       <Route path="/choose" element={<Choose />} />
       <Route path="/kids" element={<Kids />} />
       <Route path="/rocket" element={<Rocket />} />
+      <Route path="/sunny" element={<SpaceVideoSunny />} />
+      <Route path="/human" element={<SpaceHuman />} />
+      <Route path="/others" element={<OtherHome />} />
+      
     </Routes>
   );
 }

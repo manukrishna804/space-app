@@ -80,7 +80,7 @@ const AudioFX = (() => {
   };
 })();
 
-export default function SpaceVideoQuizSunny() {
+export default function SpaceVideoSunny() {
   const [currentView, setCurrentView] = useState('video'); // 'video', 'quiz', 'game'
   const [showQuizModal, setShowQuizModal] = useState(false);
   const [showResultsModal, setShowResultsModal] = useState(false);
