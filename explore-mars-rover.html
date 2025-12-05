@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--
+    Explore Mars – Rover Game (single file)
+    How it works:
+      - The child builds a list of commands (Forward, Turn Left, Turn Right, Scan Rock).
+      - Press RUN to execute each command with a short delay.
+      - If the rover is on the rock tile when "Scan Rock" runs, we show a happy message.
+      - Hitting the map edge or scanning the wrong spot shows a gentle "Try again!" message.
+    Tweaks:
+      - Change GRID_SIZE to 5 or 6.
+      - Adjust STEP_DELAY for faster/slower execution.
+      - Colors/styles can be changed in CSS variables below.
+  -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explore Mars – Rover Game</title>
+  <style>
+    :root {
+      --bg: radial-gradient(circle at 30% 20%, #f7c17b, #e57a3c 60%);
+      --panel: #ffe9c9;
+      --grid-line: #e0a86a;
+      --tile: #f5d2a3;
+      --rock: #6a4e23;
+      --rover: #ff5f6d;
+      --text: #3a2a10;
+      --btn: #ff8f3f;
+      --btn-dark: #d66d22;
+      --good: #3cb179;
+      --soft: #ffce54;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px;
+      color: var(--text);
+      text-align: center;
+    }
+    h1 { margin: 0 0 12px 0; }
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      width: min(1100px, 100%);
+    }
+    .panel {
+      background: var(--panel);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+    }
+    #grid {
+      display: grid;
+      gap: 4px;
+      background: var(--panel);
+      padding: 8px;
+      border-radius: 14px;
+      box-shadow: inset 0 0 0 2px var(--grid-line);
+    }
+    .cell {
+      background: var(--tile);
+      border: 2px solid var(--grid-line);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-size: 28px;
+      height: 70px;
+      position: relative;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+    .rover {
+      font-size: 34px;
+      color: var(--rover);
+    }
+    .rock {
+      font-size: 30px;
+    }
+    .highlight {
+      animation: wiggle 0.6s ease;
+    }
+    @keyframes wiggle {
+      0% { transform: rotate(0deg) scale(1); }
+      25% { transform: rotate(-5deg) scale(1.05); }
+      50% { transform: rotate(5deg) scale(1.07); }
+      75% { transform: rotate(-4deg) scale(1.05); }
+      100% { transform: rotate(0deg) scale(1); }
+    }
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin-top: 8px;
+    }
+    button {
+      background: var(--btn);
+      border: none;
+      border-radius: 12px;
+      padding: 14px 10px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+      transition: transform 0.1s ease, background 0.2s ease;
+      touch-action: manipulation;
+    }
+    button:hover { transform: translateY(-2px); background: var(--btn-dark); }
+    button:active { transform: translateY(1px); }
+    #runBtn { font-size: 22px; padding: 16px; }
+    #message {
+      min-height: 28px;
+      font-size: 22px;
+      font-weight: 800;
+      margin-top: 6px;
+    }
+    #commands {
+      background: #fff6e7;
+      border-radius: 12px;
+      padding: 10px;
+      min-height: 60px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .chip {
+      background: #ffd8a1;
+      border: 1px solid #f4b56a;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 16px;
+    }
+    @media (max-width: 760px) {
+      .container { grid-template-columns: 1fr; }
+      .cell { height: 58px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Explore Mars – Rover Game</h1>
+  <div class="container">
+    <div class="panel">
+      <h2 style="margin-top:4px;">Mars Map</h2>
+      <div id="grid"></div>
+    </div>
+    <div class="panel">
+      <h2 style="margin-top:4px;">Add Commands</h2>
+      <div class="controls">
+        <button data-cmd="forward">Forward ⬆️</button>
+        <button data-cmd="left">Turn Left ↩️</button>
+        <button data-cmd="right">Turn Right ↪️</button>
+        <button data-cmd="scan">Scan Rock 🔍</button>
+      </div>
+      <h3 style="margin:12px 0 6px 0;">Your commands:</h3>
+      <div id="commands"></div>
+      <div class="controls" style="grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); margin-top:12px;">
+        <button id="runBtn">RUN ▶️</button>
+        <button id="resetBtn" style="background:#9aa6ff;">Reset 🔄</button>
+      </div>
+      <div id="message"></div>
+    </div>
+  </div>
+
+  <script>
+    // --- Configurable values ---
+    const GRID_SIZE = 6;
+    const STEP_DELAY = 650; // ms between commands
+
+    // Directions order helps with left/right turns.
+    const DIRECTIONS = ["up", "right", "down", "left"];
+    const DIR_ARROWS = { up: "⬆️", right: "➡️", down: "⬇️", left: "⬅️" };
+
+    const gridEl = document.getElementById("grid");
+    const commandsEl = document.getElementById("commands");
+    const messageEl = document.getElementById("message");
+
+    // Build the grid once.
+    gridEl.style.gridTemplateColumns = `repeat(${GRID_SIZE}, 1fr)`;
+    gridEl.style.gridTemplateRows = `repeat(${GRID_SIZE}, 1fr)`;
+    const cells = [];
+    for (let r = 0; r < GRID_SIZE; r++) {
+      for (let c = 0; c < GRID_SIZE; c++) {
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        cell.dataset.row = r;
+        cell.dataset.col = c;
+        gridEl.appendChild(cell);
+        cells.push(cell);
+      }
+    }
+
+    const state = {
+      rover: { row: GRID_SIZE - 1, col: 0, dir: "up" },
+      rock: { row: 1, col: GRID_SIZE - 2 },
+      commands: [],
+      running: false
+    };
+
+    // Randomize rock position (not on rover).
+    function placeRock() {
+      let row, col;
+      do {
+        row = Math.floor(Math.random() * GRID_SIZE);
+        col = Math.floor(Math.random() * GRID_SIZE);
+      } while (row === state.rover.row && col === state.rover.col);
+      state.rock = { row, col };
+    }
+
+    function resetRover() {
+      state.rover = { row: GRID_SIZE - 1, col: 0, dir: "up" };
+    }
+
+    // Render grid contents.
+    function render() {
+      cells.forEach(cell => {
+        cell.textContent = "";
+        cell.classList.remove("highlight");
+        const r = Number(cell.dataset.row);
+        const c = Number(cell.dataset.col);
+        if (r === state.rock.row && c === state.rock.col) {
+          cell.innerHTML = `<span class="rock">🪨</span>`;
+        }
+        if (r === state.rover.row && c === state.rover.col) {
+          cell.innerHTML = `<span class="rover">🚗 ${DIR_ARROWS[state.rover.dir]}</span>`;
+        }
+      });
+    }
+
+    // Update command chips.
+    function renderCommands() {
+      commandsEl.innerHTML = "";
+      state.commands.forEach(cmd => {
+        const chip = document.createElement("div");
+        chip.className = "chip";
+        chip.textContent = cmdLabel(cmd);
+        commandsEl.appendChild(chip);
+      });
+    }
+
+    function cmdLabel(cmd) {
+      switch (cmd) {
+        case "forward": return "Forward";
+        case "left": return "Turn Left";
+        case "right": return "Turn Right";
+        case "scan": return "Scan Rock";
+      }
+      return cmd;
+    }
+
+    // Command button handlers (works for mouse + touch).
+    document.querySelectorAll("[data-cmd]").forEach(btn => {
+      const cmd = btn.dataset.cmd;
+      btn.addEventListener("click", () => addCommand(cmd));
+      btn.addEventListener("touchstart", () => addCommand(cmd), { passive: true });
+    });
+
+    function addCommand(cmd) {
+      if (state.running) return;
+      state.commands.push(cmd);
+      renderCommands();
+      setMessage("Command added!", "soft");
+    }
+
+    document.getElementById("runBtn").addEventListener("click", runCommands);
+    document.getElementById("runBtn").addEventListener("touchstart", runCommands, { passive: true });
+    document.getElementById("resetBtn").addEventListener("click", fullReset);
+    document.getElementById("resetBtn").addEventListener("touchstart", fullReset, { passive: true });
+
+    function fullReset() {
+      state.commands = [];
+      resetRover();
+      placeRock();
+      renderCommands();
+      render();
+      setMessage("Ready to explore!", "soft");
+    }
+
+    // Execute commands in sequence with a delay.
+    async function runCommands() {
+      if (state.running || state.commands.length === 0) return;
+      state.running = true;
+      setMessage("Running your rover...", "soft");
+      for (let i = 0; i < state.commands.length; i++) {
+        await new Promise(res => setTimeout(res, STEP_DELAY));
+        const result = applyCommand(state.commands[i]);
+        render();
+        if (!result.ok) {
+          // Friendly fail; stop early.
+          setMessage("Try again!", "soft");
+          break;
+        }
+        if (result.scanned) {
+          setMessage("Great job! You scanned the rock!", "good");
+          highlightRock();
+          break;
+        }
+      }
+      await new Promise(res => setTimeout(res, 400));
+      state.commands = [];
+      renderCommands();
+      resetRover();
+      placeRock();
+      render();
+      state.running = false;
+    }
+
+    // Apply one command; returns status.
+    function applyCommand(cmd) {
+      if (cmd === "left" || cmd === "right") {
+        turn(cmd === "left" ? -1 : 1);
+        return { ok: true };
+      }
+      if (cmd === "forward") {
+        return moveForward();
+      }
+      if (cmd === "scan") {
+        const onRock = state.rover.row === state.rock.row && state.rover.col === state.rock.col;
+        return { ok: true, scanned: onRock };
+      }
+      return { ok: true };
+    }
+
+    function turn(delta) {
+      const idx = DIRECTIONS.indexOf(state.rover.dir);
+      state.rover.dir = DIRECTIONS[(idx + delta + DIRECTIONS.length) % DIRECTIONS.length];
+    }
+
+    function moveForward() {
+      const { row, col, dir } = state.rover;
+      let nr = row, nc = col;
+      if (dir === "up") nr -= 1;
+      if (dir === "down") nr += 1;
+      if (dir === "left") nc -= 1;
+      if (dir === "right") nc += 1;
+      if (nr < 0 || nr >= GRID_SIZE || nc < 0 || nc >= GRID_SIZE) {
+        return { ok: false }; // hits boundary
+      }
+      state.rover.row = nr;
+      state.rover.col = nc;
+      return { ok: true };
+    }
+
+    function setMessage(text, type) {
+      messageEl.textContent = text;
+      messageEl.style.color = type === "good" ? "var(--good)" : "var(--soft)";
+    }
+
+    function highlightRock() {
+      const cell = cells.find(c => Number(c.dataset.row) === state.rock.row && Number(c.dataset.col) === state.rock.col);
+      if (cell) {
+        cell.classList.remove("highlight");
+        void cell.offsetWidth;
+        cell.classList.add("highlight");
+      }
+    }
+
+    // Initial setup.
+    placeRock();
+    render();
+    setMessage("Add commands then press RUN!", "soft");
+  </script>
+</body>
+</html>
+
