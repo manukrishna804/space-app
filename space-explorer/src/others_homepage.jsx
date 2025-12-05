@@ -1,90 +1,119 @@
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-export default function OtherHome() {
-  const weatherNews = [
-    {
-      title: "Solar Storm Alert",
-      desc: "A moderate solar storm is expected to hit Earth tomorrow, possibly causing auroras.",
-      time: "Updated 2 hours ago",
-    },
-    {
-      title: "Heavy Rainfall Expected",
-      desc: "The eastern region may experience heavy rainfall over the next 24 hours.",
-      time: "Updated 3 hours ago",
-    },
-    {
-      title: "Temperature Rising",
-      desc: "Heatwave conditions expected in northern areas this week.",
-      time: "Updated 1 hour ago",
-    },
-  ];
+export default function APOD() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const upcomingEvents = [
-    {
-      title: "Meteor Shower Peak",
-      date: "Jan 12, 2025",
-      desc: "The Quadrantids meteor shower will peak with up to 40 meteors per hour.",
-    },
-    {
-      title: "Moon Eclipse",
-      date: "Feb 18, 2025",
-      desc: "A partial lunar eclipse visible in most Asian regions.",
-    },
-    {
-      title: "Jupiter at Opposition",
-      date: "Mar 9, 2025",
-      desc: "Jupiter will be closest to Earth, perfect for telescope viewing.",
-    },
-  ];
+  useEffect(() => {
+    const API_KEY = "DEMO_KEY"; // ✅ Replace with your real key
 
+    async function fetchApod() {
+      try {
+        const res = await fetch(
+          `https://api.nasa.gov/planetary/apod?api_key=${API_KEY}`
+        );
+
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+
+        const json = await res.json();
+        setData(json);
+      } catch (err) {
+        console.error("APOD fetch failed:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchApod();
+  }, []);
+
+  // ✅ Loading state (UNCHANGED BEHAVIOR)
+  if (loading) {
+    return (
+      <div className="rounded-2xl border border-slate-700/70 bg-slate-900/80 p-6 text-slate-200 text-center">
+        Loading Astronomy Picture of the Day…
+      </div>
+    );
+  }
+
+  // ✅ Fallback state (UNCHANGED BEHAVIOR)
+  if (error || !data) {
+    return (
+      <section className="rounded-2xl border border-slate-700/70 bg-slate-900/80 p-6 text-center">
+        <div className="text-6xl mb-4">🛰️</div>
+        <h2 className="text-xl font-semibold text-slate-50 mb-2">
+          Couldn&apos;t load today&apos;s APOD
+        </h2>
+        <p className="text-sm text-slate-300">
+          NASA servers may be unreachable right now.
+        </p>
+        <p className="text-xs text-slate-500 mt-2">
+          Error: {error || "Unknown error"}
+        </p>
+      </section>
+    );
+  }
+
+  // ✅ FINAL LAYOUT (IMAGE AS FRAMED BACKGROUND + CONTENT KEPT)
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-purple-900 to-black text-white p-10">
+    <section className="relative rounded-2xl border border-slate-700/70 bg-slate-900/80 overflow-hidden shadow-xl shadow-black/40">
 
-      <h1 className="text-4xl font-bold text-center mb-12 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
-        Weather News & Space Events
-      </h1>
+      {/* ✅ BACKGROUND FRAME (BLURRED IMAGE FILL) */}
+      {data.media_type === "image" && (
+        <div
+          className="absolute inset-0 bg-cover bg-center blur-2xl scale-110 opacity-30"
+          style={{ backgroundImage: `url(${data.url})` }}
+        />
+      )}
 
-      {/* TWO COLUMNS */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+      {/* ✅ FOREGROUND CONTENT */}
+      <div className="relative z-10 flex flex-col items-center text-center">
 
-        {/* LEFT COLUMN - WEATHER */}
-        <div className="bg-white/10 p-6 rounded-3xl border border-white/20 backdrop-blur-lg shadow-xl">
-          <h2 className="text-3xl font-bold mb-6 text-blue-300">Weather News</h2>
-
-          <div className="space-y-6">
-            {weatherNews.map((news, index) => (
-              <div
-                key={index}
-                className="p-4 bg-white/5 rounded-xl border border-white/10 hover:bg-white/20 transition"
-              >
-                <h3 className="text-xl font-semibold">{news.title}</h3>
-                <p className="text-gray-300 mt-2">{news.desc}</p>
-                <p className="text-gray-400 text-sm mt-2">{news.time}</p>
-              </div>
-            ))}
-          </div>
+        {/* ✅ IMAGE / VIDEO MAIN */}
+        <div className="w-full flex justify-center bg-black/40">
+          {data.media_type === "image" ? (
+            <img
+              src={data.url}
+              alt={data.title}
+              className="max-h-[420px] w-auto object-contain rounded-lg"
+            />
+          ) : (
+            <iframe
+              title="APOD Video"
+              src={data.url}
+              className="w-full max-w-4xl h-[320px] rounded-lg"
+              allowFullScreen
+            />
+          )}
         </div>
 
-        {/* RIGHT COLUMN - UPCOMING EVENTS */}
-        <div className="bg-white/10 p-6 rounded-3xl border border-white/20 backdrop-blur-lg shadow-xl">
-          <h2 className="text-3xl font-bold mb-6 text-pink-300">Upcoming Space Events</h2>
+        {/* ✅ TITLE + DATE (UNCHANGED CONTENT) */}
+        <div className="px-6 pt-4">
+          <p className="text-xs uppercase tracking-[0.25em] text-slate-400">
+            NASA • Astronomy Picture of the Day
+          </p>
 
-          <div className="space-y-6">
-            {upcomingEvents.map((event, index) => (
-              <div
-                key={index}
-                className="p-4 bg-white/5 rounded-xl border border-white/10 hover:bg-white/20 transition"
-              >
-                <h3 className="text-xl font-semibold">{event.title}</h3>
-                <p className="text-gray-400 text-sm mt-1">{event.date}</p>
-                <p className="text-gray-300 mt-2">{event.desc}</p>
-              </div>
-            ))}
-          </div>
+          <h2 className="text-lg md:text-2xl font-semibold text-slate-50 mt-2">
+            {data.title}
+          </h2>
+
+          <p className="text-xs text-slate-400 mt-1">
+            {data.date}
+          </p>
+        </div>
+
+        {/* ✅ DESCRIPTION AT THE BOTTOM (UNCHANGED CONTENT) */}
+        <div className="px-6 pb-6 pt-4 max-w-4xl">
+          <p className="text-sm text-slate-300 leading-relaxed">
+            {data.explanation}
+          </p>
         </div>
 
       </div>
-
-    </div>
+    </section>
   );
 }
