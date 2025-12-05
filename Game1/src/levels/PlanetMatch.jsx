@@ -1,140 +1,159 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
-const planetsToMatch = [
-  { id: 'earth', name: 'Earth', color: '#4F4CB0' },
-  { id: 'mars', name: 'Mars', color: '#FF5733' },
-  { id: 'saturn', name: 'Saturn', color: '#F4D03F' }
+const correctOrder = ['Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune'];
+
+const initialPlanets = [
+  { id: 'mars', name: 'Mars', color: '#FF5733', size: 50 },
+  { id: 'jupiter', name: 'Jupiter', color: '#D8CA9D', size: 90 },
+  { id: 'earth', name: 'Earth', color: '#4F4CB0', size: 60 },
+  { id: 'mercury', name: 'Mercury', color: '#A0A0A0', size: 40 },
+  { id: 'saturn', name: 'Saturn', color: '#F4D03F', size: 80 },
+  { id: 'venus', name: 'Venus', color: '#E3BB76', size: 55 },
+  { id: 'uranus', name: 'Uranus', color: '#4FD0E7', size: 70 },
+  { id: 'neptune', name: 'Neptune', color: '#4b70dd', size: 68 },
 ];
 
 const PlanetMatch = ({ onComplete }) => {
-  const [matched, setMatched] = useState([]);
+  const [placedPlanets, setPlacedPlanets] = useState(Array(8).fill(null));
+  const [availablePlanets, setAvailablePlanets] = useState(initialPlanets);
+  const [message, setMessage] = useState("Drag planets to the empty slots!");
 
-  const handleDragEnd = (event, info, planet) => {
-    // Simple logic: if dropped roughly in the top area (y < 300) and x aligns
-    // Since we don't have refs to drop zones easily without more code, we'll try a simpler approach:
-    // "Click to Select" -> "Click to Place" might be better for Web accessibility, but Drag is requested in plan.
-    // Let's rely on visual feedback or simple collision check if possible.
-    // Actually, checking proximity in React without refs is tricky.
-    // Let's switch to Click-Click matching for robustness unless user insisted on Drag. Plan said Drag.
-    // Okay, I will implement a visual check based on screen coordinates? No, too flaky.
-    // I will use a simple distance check if I can get the drop zone coordinates.
-    // BUT, simplified: Let's assume there are 3 drop zones.
-    // If we use framer-motion `onDragEnd`, `info.point` gives us global coordinates.
-    // Let's use a simpler heuristic: If y < 300 (upper half).
-    
-    // BETTER APPROACH: "Click to match" is safer to implement blindly. 
-    // BUT I will stick to drag but make it very forgiving or fallback to click if easy.
-    // Let's use Reorder? No.
-    // Let's use a simplified "Drag to Box" where the box is just "The Top Area".
-    // Actually, for a kid's game, let's try a "Click the Planet, then Click the Silhouette" approach is also "Interactive".
-    // But drag is cooler.
-    // Let's assume the drop zones are static.
-  };
-  
-  // Implementation change: Click Matching is much more reliable to code without seeing the screen.
-  // "Click matched pairs"
-  
-  const [selectedId, setSelectedId] = useState(null);
+  const checkDrop = (e, info, planet) => {
+      const dropZones = document.querySelectorAll('.orbit-slot');
+      let droppedInZone = -1;
 
-  const handlePlanetClick = (id) => {
-    if (matched.includes(id)) return;
-    
-    if (selectedId === null) {
-        setSelectedId(id);
-    } else {
-        if (selectedId === id) {
-            // Deselect
-            setSelectedId(null);
-        } else {
-             // Logic for checking match? No, we have Source and Target.
-             // Let's make it Drag-like but with clicks: "Select Earth Payload", "Select Earth Target".
-             // Too complex.
-             // Let's go back to Drag with simplistic checks.
-        }
-    }
-  };
+      // Simple collision detection
+      dropZones.forEach((zone, idx) => {
+          const rect = zone.getBoundingClientRect();
+          const point = { x: info.point.x, y: info.point.y };
+          
+          if (point.x >= rect.left && point.x <= rect.right && 
+              point.y >= rect.top && point.y <= rect.bottom) {
+              droppedInZone = idx;
+          }
+      });
 
-  // Re-evaluating: Drag allows `dragSnapToOrigin` if failed.
-  // Let's try Drag with a "Ref" based check?
-  // I'll stick to a simpler matching game:
-  // "Drag the name to the planet" ?
-  
-  // Let's go with "Click matching":
-  // Top row: Silhouettes (gray). Bottom row: Planets (color).
-  // Click Color -> Click Silhouette -> If Match, it stays.
+      if (droppedInZone !== -1) {
+          if (placedPlanets[droppedInZone] !== null) {
+              setMessage("That slot is already taken!");
+              return;
+          }
 
-  const [feedback, setFeedback] = useState("");
-
-  const handleMatchAttempt = (targetId) => {
-    if (!selectedId) return;
-    
-    if (selectedId === targetId) {
-        setFeedback("Correct!");
-        setMatched([...matched, targetId]);
-        setSelectedId(null);
-        if (matched.length + 1 === planetsToMatch.length) {
-            setTimeout(onComplete, 2000);
-        }
-    } else {
-        setFeedback("Try again!");
-        setTimeout(() => setFeedback(""), 1000);
-        setSelectedId(null);
-    }
+          if (correctOrder[droppedInZone] === planet.name) {
+              const newPlaced = [...placedPlanets];
+              newPlaced[droppedInZone] = planet;
+              setPlacedPlanets(newPlaced);
+              
+              setAvailablePlanets(availablePlanets.filter(p => p.id !== planet.id));
+              setMessage(`Correct! ${planet.name} secured!`);
+              
+              if (newPlaced.filter(p => p).length === 8) {
+                   setTimeout(onComplete, 2000);
+                   setMessage("SYSTEM REPAIRED! You are amazing!");
+              }
+          } else {
+              setMessage(`Oops! ${planet.name} doesn't go there.`);
+          }
+      }
   };
 
   return (
-    <div className="match-container">
-      <h2>Match the Planets!</h2>
-      <p style={{textAlign: 'center'}}>Tap a colored planet, then tap its shadow!</p>
-      <p style={{textAlign: 'center', height: '20px', color: '#00d4ff'}}>{feedback}</p>
+    <div className="match-container" style={{ overflow: 'hidden', background: 'radial-gradient(circle at bottom, #1a1a40 0%, #000000 100%)' }}>
+      <h2 style={{ textAlign: 'center', marginTop: '20px' }}>Fix the Solar System!</h2>
+      <p style={{ textAlign: 'center', color: '#00d4ff', fontSize: '1.2rem' }}>{message}</p>
 
-      <div className="drop-zones">
-        {planetsToMatch.map(p => (
+      <div className="orbit-slots" style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          gap: '20px', 
+          marginTop: '30px',
+          height: '250px',
+          padding: '20px',
+          background: 'rgba(255,255,255,0.05)',
+          borderRadius: '20px',
+          width: '90%',
+          margin: '20px auto'
+      }}>
+        <div className="sun-icon" style={{
+            width: '100px', height: '100px', background: 'radial-gradient(circle, #ffd700, #ff8c00)', borderRadius: '50%', 
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 0 50px #ff8c00', marginRight: '20px',
+            color: 'black', fontWeight: 'bold'
+        }}>Sun</div>
+        
+        {placedPlanets.map((p, i) => (
             <div 
-                key={p.id} 
-                className="drop-zone"
-                onClick={() => handleMatchAttempt(p.id)}
-                style={{ 
-                    borderColor: matched.includes(p.id) ? '#00ff00' : 'rgba(255,255,255,0.5)',
-                    backgroundColor: matched.includes(p.id) ? p.color : 'rgba(255,255,255,0.1)',
-                    transition: 'all 0.5s'
+                key={i} 
+                className="orbit-slot"
+                style={{
+                    width: '100px',
+                    height: '100px',
+                    border: '2px dashed rgba(255,255,255,0.3)',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    background: p ? 'transparent' : 'rgba(0,0,0,0.3)',
+                    position: 'relative'
                 }}
             >
-                {matched.includes(p.id) ? <span>{p.name}</span> : <span style={{opacity: 0.5}}>{p.name}?</span>}
+                <span style={{ position: 'absolute', top: '-25px', fontSize: '0.8rem', opacity: 0.7 }}>Orbit {i + 1}</span>
+                {p ? (
+                    <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        style={{
+                            width: p.size,
+                            height: p.size,
+                            backgroundColor: p.color,
+                            borderRadius: '50%',
+                            boxShadow: `0 0 20px ${p.color}`,
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}
+                    >
+                        <span style={{ fontSize: '10px', color: 'black', fontWeight: 'bold' }}>{p.name}</span>
+                    </motion.div>
+                ) : (
+                    <div style={{ width: '10px', height: '10px', background: 'white', borderRadius: '50%', opacity: 0.2 }}></div>
+                )}
             </div>
         ))}
       </div>
 
-      <div className="draggables">
-        {planetsToMatch.map(p => (
-            !matched.includes(p.id) && (
-                <motion.div
-                    key={p.id}
-                    className="draggable-item"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => setSelectedId(p.id)}
-                    animate={{ 
-                        y: selectedId === p.id ? -10 : 0,
-                        boxShadow: selectedId === p.id ? '0 0 20px white' : 'none'
-                    }}
-                    style={{
-                        width: '100px',
-                        height: '100px',
-                        borderRadius: '50%',
-                        backgroundColor: p.color,
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        color: 'black',
-                        fontWeight: 'bold',
-                        cursor: 'pointer'
-                    }}
-                >
-                    {p.name}
-                </motion.div>
-            )
+      <div className="planet-pool" style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '30px',
+          marginTop: '40px',
+          flexWrap: 'wrap',
+          padding: '20px'
+      }}>
+        {availablePlanets.map(planet => (
+            <motion.div
+                key={planet.id}
+                drag
+                dragSnapToOrigin={true} // Key fix: Returns to start if dropped incorrectly
+                whileHover={{ scale: 1.1, cursor: 'grab' }}
+                whileDrag={{ scale: 1.2, cursor: 'grabbing', zIndex: 1000 }}
+                onDragEnd={(e, info) => checkDrop(e, info, planet)}
+                style={{
+                    width: planet.size,
+                    height: planet.size,
+                    backgroundColor: planet.color,
+                    borderRadius: '50%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    boxShadow: '0 0 10px white',
+                    touchAction: 'none' // Important for touch devices
+                }}
+            >
+                <span style={{ fontSize: '12px', color: 'black', fontWeight: 'bold', pointerEvents: 'none' }}>{planet.name}</span>
+            </motion.div>
         ))}
       </div>
     </div>

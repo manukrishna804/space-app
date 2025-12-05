@@ -1,28 +1,21 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
-const questions = [
-  {
-    question: "Which planet is known as the Red Planet?",
-    options: ["Venus", "Mars", "Jupiter", "Sun"],
-    correct: 1
-  },
-  {
-    question: "What is the name of our galaxy?",
-    options: ["Andromeda", "Milky Way", "Snickers", "Whirlpool"],
-    correct: 1
-  },
-  {
-    question: "Which serves as the center of our Solar System?",
-    options: ["Earth", "The Sun", " The Moon", "Black Hole"],
-    correct: 1
-  }
-];
+import questionsData from '../assets/questions.json';
 
 const SpaceQuiz = ({ onComplete }) => {
+  const [questions, setQuestions] = useState([]);
   const [currentQ, setCurrentQ] = useState(0);
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
+
+  // Shuffle and pick 5 questions on mount
+  React.useEffect(() => {
+      const shuffled = [...questionsData].sort(() => 0.5 - Math.random());
+      setQuestions(shuffled.slice(0, 5));
+  }, []);
+
+  if (questions.length === 0) return <div>Loading Quiz...</div>;
 
   const handleAnswer = (index) => {
     if (showResult) return;
