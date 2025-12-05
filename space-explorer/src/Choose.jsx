@@ -32,7 +32,7 @@ export default function Choose() {
 
         {/* Others Card */}
         <div
-          className="cursor-pointer group relative w-72 h-72 rounded-3xl bg-gradient-to-br from-pink-500/30 to-orange-500/30 backdrop-blur-xl border border-white/20 shadow-xl hover:scale-110 transition-all p-6 flex flex-col items-center justify-center"
+          className="cursor-pointer group relative w-72 h-72 rounded-3xl bg-gradient-to-br from-pink-500/30 to-orange-500/30 backdrop-blur-xl border border-white/20 shadow-xl hover:scale-110 transition-all p-6 flex flex-col items-center justify-center" onClick={() => navigate("/others")}
         >
           <div className="absolute inset-0 rounded-3xl bg-pink-500/20 blur-2xl opacity-0 group-hover:opacity-100 transition"></div>
 

@@ -6,9 +6,9 @@ export default function Kids() {
   const [search, setSearch] = useState("");
 
   const items = [
-    { title: "Rocket", path: "/rocket", img: "https://cdn-icons-png.flaticon.com/512/616/616430.png" },
-    { title: "Stars", path: "/stars", img: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png" },
-    { title: "Galaxies", path: "/galaxies", img: "https://cdn-icons-png.flaticon.com/512/414/414974.png" },
+    { title: "Journey of Little Rocket", path: "/rocket", img: "https://cdn-icons-png.flaticon.com/512/616/616430.png" },
+    { title: "Meet the Planets", path: "/sunny", img: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png" },
+    { title: "Humans in Space", path: "/human", img: "https://cdn-icons-png.flaticon.com/512/414/414974.png" },
     { title: "Rockets", path: "/rockets", img: "https://cdn-icons-png.flaticon.com/512/321/321830.png" },
     { title: "Astronauts", path: "/astronauts", img: "https://cdn-icons-png.flaticon.com/512/869/869869.png" },
     { title: "Black Holes", path: "/blackholes", img: "https://cdn-icons-png.flaticon.com/512/581/581601.png" },

@@ -95,7 +95,7 @@ function shuffle(arr) {
   return result;
 }
 
-export default function SpaceLearningFlow() {
+export default function SpaceHuman() {
   const [currentView, setCurrentView] = useState('video'); // 'video', 'quiz', 'game'
   const [showQuizModal, setShowQuizModal] = useState(false);
   const [showResultsModal, setShowResultsModal] = useState(false);
