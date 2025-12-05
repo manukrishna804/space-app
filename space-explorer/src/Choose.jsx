@@ -1,4 +1,8 @@
+
+import { useNavigate } from "react-router-dom";
+
 export default function Choose() {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-gray-900 via-purple-900 to-black text-white px-6">
 
@@ -10,7 +14,7 @@ export default function Choose() {
 
         {/* Kids Card */}
         <div
-          className="cursor-pointer group relative w-72 h-72 rounded-3xl bg-gradient-to-br from-blue-500/30 to-purple-600/30 backdrop-blur-xl border border-white/20 shadow-xl hover:scale-110 transition-all p-6 flex flex-col items-center justify-center"
+          className="cursor-pointer group relative w-72 h-72 rounded-3xl bg-gradient-to-br from-blue-500/30 to-purple-600/30 backdrop-blur-xl border border-white/20 shadow-xl hover:scale-110 transition-all p-6 flex flex-col items-center justify-center" onClick={() => navigate("/kids")}
         >
           <div className="absolute inset-0 rounded-3xl bg-blue-500/20 blur-2xl opacity-0 group-hover:opacity-100 transition"></div>
 
