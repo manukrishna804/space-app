@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./Home.jsx";
 import Choose from "./Choose.jsx";
 import Kids from "./kids.jsx";
-import Rocket from "./rocket.jsx";
+import Rocket from "./kids_section/rocket.jsx";
 export default function App() {
   return (
     <Routes>
