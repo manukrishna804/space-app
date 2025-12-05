@@ -1,0 +1,45 @@
+/* src/styles.css - global styles for the mini-games app */
+:root{
+  --bg: #0b1020;
+  --card: linear-gradient(180deg,#0f1724,#071022);
+  --muted: #9aa6b2;
+  --accent: #2b6cb0;
+}
+
+* { box-sizing: border-box; }
+html,body,#root { height:100%; margin:0; padding:0; background:var(--bg); color:#fff; font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+
+.app { max-width: 960px; margin: 28px auto; padding: 12px; }
+h1 { margin: 0 0 12px 0; color:#9be7ff; font-size:2rem; }
+.small { color:var(--muted); font-size:0.95rem; }
+
+.card {
+  background: var(--card);
+  padding:16px;
+  border-radius:12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+  margin-bottom:18px;
+  border: 1px solid rgba(255,255,255,0.03);
+}
+
+.header { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:8px; }
+.btn { padding:8px 12px; border-radius:8px; background:var(--accent); border:none; color:white; cursor:pointer; }
+.btn.secondary { background:#6b7280; }
+.feedback { margin-top:10px; font-weight:600; color:#ffd166; }
+
+/* small planet boxes used in games */
+.planet {
+  padding:10px 14px; border-radius:10px; cursor:grab; user-select:none;
+  background:#112033; border: 1px solid rgba(255,255,255,0.06);
+  display:inline-flex; flex-direction:column; align-items:flex-start;
+}
+.drop-zone { min-height: 120px;
+  padding: 20px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  margin-top: 12px;
+  border: 1px solid rgba(255,255,255,0.08); }
