@@ -87,7 +87,7 @@ export default function App() {
 
           {/* Button */}
           <button 
-            className="group relative px-12 py-5 text-xl font-semibold text-white transition-all duration-300 hover:scale-110 active:scale-95"
+            className="group relative w-58 h-15 px-12 py-5 text-xl font-semibold text-white transition-all duration-300 hover:scale-110 active:scale-95"
             onClick={() => console.log('Explore clicked!')}
           >
             {/* Button glow effect */}
@@ -101,7 +101,7 @@ export default function App() {
                  style={{ padding: '2px' }} />
             
             {/* Button text */}
-            <span className="relative z-10 flex items-center gap-2">
+            <span className="relative z-10 flex items-center justify-center gap-2">
               Let's Explore
               <svg 
                 className="w-6 h-6 transition-transform group-hover:translate-x-2" 
