@@ -144,7 +144,7 @@ export default function Rocket() {
 
     // ------------------ Video logic ------------------
     function initVideo() {
-      videoSource.src = VIDEO_SRC;
+      videoSource.src = "v2.mp4";
       videoEl.load();
       playPauseBtn.addEventListener("click", () => {
         if (videoEl.paused) videoEl.play();
@@ -448,6 +448,45 @@ export default function Rocket() {
         .planet {
           border-radius:50%; display:grid; place-items:center;
           cursor:pointer;
+          border: 4px solid transparent;
+          transition: transform 0.2s, border-color 0.2s;
+        }
+        .planet:active { transform: scale(0.95); }
+        .planet.correct { border-color: var(--good); }
+        .planet.wrong { border-color: var(--bad); }
+
+        /* MODALS */
+        .modal-backdrop {
+          position: fixed; inset: 0; z-index: 999;
+          background: rgba(0,0,0,0.6);
+          display: flex; place-items: center; justify-content: center;
+          opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .modal-backdrop.show { opacity: 1; pointer-events: all; }
+
+        .modal {
+          background: var(--card); padding: 24px; border-radius: 20px;
+          max-width: 400px; width: 90%;
+          text-align: center; position: relative;
+          border: 2px solid rgba(255,255,255,0.1);
+          box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+          transform: translateY(20px); transition: transform 0.3s;
+        }
+        .modal-backdrop.show .modal { transform: translateY(0); }
+
+        .close-btn {
+          position: absolute; top: 10px; right: 10px;
+          background: transparent; padding: 0; width: 32px; height: 32px;
+          font-size: 20px; color: rgba(255,255,255,0.5);
+          min-height: auto;
+        }
+        .close-btn:hover { color: #fff; background: transparent; }
+
+        .controls-inline, .submit-row {
+          display: flex; gap: 12px; justify-content: center; margin-top: 20px; flex-wrap: wrap;
+        }
+        .inline-warn {
+          color: var(--warn); font-weight: bold; margin-top: 10px; min-height: 24px;
         }
       `}</style>
 
