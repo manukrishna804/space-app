@@ -92,7 +92,7 @@ export default function Home() {
           {/* Button */}
           <button 
             className="group relative w-58 h-15 px-12 py-5 text-xl font-semibold text-white transition-all duration-300 hover:scale-110 active:scale-95"
-            onClick={() => navigate("/profile")}
+            onClick={() => navigate("/choose")}
 
           >
             {/* Button glow effect */}

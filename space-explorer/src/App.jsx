@@ -1,12 +1,12 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "./Home.jsx";
-import Profile from "./profile.jsx";
+import Choose from "./Choose.jsx";
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/profile" element={<Profile />} />
+      <Route path="/choose" element={<Choose />} />
     </Routes>
   );
 }
