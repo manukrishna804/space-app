@@ -3,6 +3,7 @@ import Home from "./Home.jsx";
 import Choose from "./Choose.jsx";
 import Kids from "./kids.jsx";
 import Rocket from "./kids_section/rocket.jsx";
+import UpcomingEvents from "./UpcomingEvents.jsx";
 export default function App() {
   return (
     <Routes>
@@ -10,6 +11,7 @@ export default function App() {
       <Route path="/choose" element={<Choose />} />
       <Route path="/kids" element={<Kids />} />
       <Route path="/rocket" element={<Rocket />} />
+      <Route path="/events" element={<UpcomingEvents />} />
     </Routes>
   );
 }

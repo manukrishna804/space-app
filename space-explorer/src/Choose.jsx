@@ -10,7 +10,7 @@ export default function Choose() {
         Choose Your Experience
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
 
         {/* Kids Card */}
         <div
@@ -45,6 +45,27 @@ export default function Choose() {
           <h2 className="text-3xl font-bold">Others</h2>
           <p className="text-gray-300 mt-2 text-center">
             General space exploration
+          </p>
+        </div>
+
+        {/* Upcoming Events Card */}
+        <div
+          className="cursor-pointer group relative w-72 h-72 rounded-3xl bg-gradient-to-br from-green-500/30 to-teal-600/30 backdrop-blur-xl border border-white/20 shadow-xl hover:scale-110 transition-all p-6 flex flex-col items-center justify-center" onClick={() => navigate("/events")}
+        >
+          <div className="absolute inset-0 rounded-3xl bg-green-500/20 blur-2xl opacity-0 group-hover:opacity-100 transition"></div>
+
+          <svg
+            className="w-24 h-24 mb-4 group-hover:scale-110 transition"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+
+          <h2 className="text-3xl font-bold">Upcoming Events</h2>
+          <p className="text-gray-300 mt-2 text-center">
+            Launches, meteor showers & eclipses
           </p>
         </div>
 

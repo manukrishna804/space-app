@@ -1,0 +1,35 @@
+[
+  {
+    "id": "perseids-2025",
+    "title": "Perseid Meteor Shower Peak",
+    "type": "meteor_shower",
+    "startTime": "2025-08-12T00:00:00Z",
+    "location": "Best in Northern Hemisphere",
+    "source": "Custom"
+  },
+  {
+    "id": "lunar-eclipse-2025-09",
+    "title": "Lunar Eclipse",
+    "type": "eclipse",
+    "startTime": "2025-09-07T18:00:00Z",
+    "location": "Check local timings",
+    "source": "Custom"
+  },
+  {
+    "id": "geminids-2025",
+    "title": "Geminid Meteor Shower Peak",
+    "type": "meteor_shower",
+    "startTime": "2025-12-14T00:00:00Z",
+    "location": "Best viewing worldwide",
+    "source": "Custom"
+  },
+  {
+    "id": "solar-eclipse-2025-10",
+    "title": "Partial Solar Eclipse",
+    "type": "eclipse",
+    "startTime": "2025-10-02T18:00:00Z",
+    "location": "Visible in parts of Europe, Asia, and Africa",
+    "source": "Custom"
+  }
+]
+
