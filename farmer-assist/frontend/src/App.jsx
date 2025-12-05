@@ -205,8 +205,8 @@ function App() {
   };
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden bg-gray-50 text-gray-900 font-sans">
-      <div className="flex flex-1 overflow-hidden relative">
+    <div className="fixed inset-0 w-full h-full bg-gray-50 text-gray-900 font-sans z-50">
+      <div className="flex flex-1 w-full h-full overflow-hidden relative">
         {/* Map Section */}
         <div className="flex-1 relative z-0">
           <MapContainer center={location.center} zoom={13} scrollWheelZoom={true} className="h-full w-full outline-none">
@@ -247,7 +247,7 @@ function App() {
         </div>
 
         {/* Sidebar Info Panel */}
-        <div className="w-96 bg-white shadow-2xl flex flex-col z-10 overflow-y-auto border-l border-gray-200">
+        <div className="w-[450px] shrink-0 h-full min-h-full bg-white shadow-2xl flex flex-col z-10 overflow-y-auto border-l border-gray-200">
           <div className="p-5 bg-gradient-to-r from-green-700 to-green-600 text-white shadow relative">
             <h1 className="text-xl font-bold tracking-tight">KisanSpace</h1>
             <p className="text-green-100 text-xs mt-1 opacity-90">Satellite Intelligence for Farmers</p>
@@ -282,9 +282,9 @@ function App() {
                   // NORMAL AGRICULTURE UI
                   <>
                     <div className={`p-6 rounded-2xl border-l-4 shadow-sm ${data.color === '#e53e3e' ? 'bg-red-50 border-red-500' :
-                        data.color === '#dd6b20' ? 'bg-orange-50 border-orange-500' :
-                          data.color === '#3182ce' ? 'bg-blue-50 border-blue-500' :
-                            'bg-green-50 border-green-500'
+                      data.color === '#dd6b20' ? 'bg-orange-50 border-orange-500' :
+                        data.color === '#3182ce' ? 'bg-blue-50 border-blue-500' :
+                          'bg-green-50 border-green-500'
                       } transition-all duration-500`}>
                       <div className="flex items-start gap-3">
                         <div className="text-3xl">

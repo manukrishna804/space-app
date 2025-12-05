@@ -7,6 +7,7 @@ import UpcomingEvents from "./UpcomingEvents.jsx";
 import SpaceVideoSunny from "./kids_section/SpaceVideoQuizSunny.jsx";
 import SpaceHuman from "./kids_section/SpaceLearningFlow.jsx";
 import OtherHome from "./others_homepage.jsx";
+import FarmerAssistApp from "../../farmer-assist/frontend/src/App.jsx";
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
       <Route path="/sunny" element={<SpaceVideoSunny />} />
       <Route path="/human" element={<SpaceHuman />} />
       <Route path="/others" element={<OtherHome />} />
+      <Route path="/farmer-assist" element={<FarmerAssistApp />} />
 
     </Routes>
   );

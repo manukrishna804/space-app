@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
-import UpcomingEvents from "./UpcomingEvents";
+import { useNavigate } from "react-router-dom";
+// import UpcomingEvents from "./UpcomingEvents";
 
 export default function APOD() {
+  const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -124,9 +126,21 @@ export default function APOD() {
       {/* APOD Section */}
       {renderApodContent()}
 
-      {/* Upcoming Events Section */}
-      <div className="relative z-10 p-6 rounded-2xl border border-slate-700/50 bg-black/20">
-         <UpcomingEvents />
+      {/* Navigation Buttons Section */}
+      <div className="flex flex-col md:flex-row gap-6 justify-center items-center p-8">
+        <button
+          onClick={() => navigate("/events")}
+          className="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-blue-500/50"
+        >
+          📅 View Upcoming Events
+        </button>
+
+        <button
+          onClick={() => navigate("/farmer-assist")}
+          className="px-8 py-4 bg-green-600 hover:bg-green-500 text-white rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-green-500/50"
+        >
+          🌱 Launch Farmer Assist
+        </button>
       </div>
     </div>
   );
