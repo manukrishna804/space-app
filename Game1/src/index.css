@@ -1,0 +1,203 @@
+:root {
+  --space-black: #050510;
+  --space-blue: #1a1a40;
+  --star-white: #ffffff;
+  --planet-glow: #00d4ff;
+  --accent-purple: #bd00ff;
+  font-family: 'Outfit', sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--space-black);
+  color: var(--star-white);
+  overflow: hidden;
+  user-select: none;
+}
+
+.app-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at center, var(--space-blue) 0%, var(--space-black) 100%);
+}
+
+/* Solar System Styles */
+.solar-system {
+  position: relative;
+  width: 600px;
+  height: 600px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sun {
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(#ffd700, #ff8c00);
+  border-radius: 50%;
+  box-shadow: 0 0 50px #ff8c00;
+  z-index: 10;
+  cursor: pointer;
+  animation: pulse 3s infinite;
+}
+
+.orbit {
+  position: absolute;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%); /* Centering trick doesn't work well with absolute positioning of children usually, but we'll use top/left 50% on container */
+  top: 50%;
+  left: 50%;
+}
+
+.planet {
+  position: absolute;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.3s;
+  top: 50%;
+  left: 50%;
+  transform-origin: top left; /* This might be tricky for orbits, will use a container for rotation */
+}
+
+.planet:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 20px white;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.9; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(var(--orbit-radius)) rotate(0deg); }
+  to { transform: rotate(360deg) translateX(var(--orbit-radius)) rotate(-360deg); }
+}
+
+/* We need a specific wrapper for orbiting to make it easier */
+.planet-orbit-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 2px;
+  animation: rotate-orbit linear infinite;
+}
+
+@keyframes rotate-orbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.fact-card {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid var(--planet-glow);
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  width: 80%;
+  max-width: 500px;
+  animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+  from { bottom: -100px; opacity: 0; }
+  to { bottom: 20px; opacity: 1; }
+}
+
+/* Level 2: Planet Match */
+.match-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.drop-zones {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 50px;
+  flex-wrap: wrap;
+}
+
+.drop-zone {
+  width: 120px;
+  height: 120px;
+  border: 2px dashed rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.draggables {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  bottom: 50px;
+  width: 100%;
+  gap: 20px;
+}
+
+.draggable-item {
+  cursor: grab;
+}
+
+.draggable-item:active {
+  cursor: grabbing;
+}
+
+/* Level 3: Quiz */
+.quiz-container {
+  background: rgba(0, 0, 0, 0.7);
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  max-width: 600px;
+  border: 2px solid var(--accent-purple);
+}
+
+.option-btn {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  margin: 10px 0;
+  background: var(--space-blue);
+  border: 1px solid var(--planet-glow);
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all 0.2s;
+}
+
+.option-btn:hover {
+  background: var(--planet-glow);
+  color: black;
+  transform: scale(1.02);
+}
+
+.option-btn.correct {
+  background: #00ff00;
+  color: black;
+}
+
+.option-btn.wrong {
+  background: #ff0000;
+}
