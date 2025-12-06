@@ -304,127 +304,176 @@ export default function FarmerAssist() {
                     </div>
                 </div>
 
-                {/* Sidebar - Using Tailwind classes from imported CSS */}
-                <div className="w-[450px] shrink-0 h-full min-h-full bg-white shadow-2xl flex flex-col z-10 overflow-y-auto border-l border-gray-200">
-                    <div className="p-5 bg-gradient-to-r from-green-700 to-green-600 text-white shadow relative">
-                        <h1 className="text-xl font-bold tracking-tight">KisanSpace</h1>
-                        <p className="text-green-100 text-xs mt-1 opacity-90">Satellite Intelligence for Farmers</p>
+                {/* Sidebar - All inline styles */}
+                <div style={{
+                    width: '450px',
+                    flexShrink: 0,
+                    height: '100%',
+                    minHeight: '100%',
+                    background: 'linear-gradient(to bottom, #f0fdf4, #d1fae5)',
+                    boxShadow: '-10px 0 25px -5px rgba(0, 0, 0, 0.1)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    zIndex: 10,
+                    overflowY: 'auto',
+                    borderLeft: '1px solid #bbf7d0'
+                }}>
+                    {/* Header */}
+                    <div style={{
+                        padding: '1.25rem',
+                        background: 'linear-gradient(to right, #15803d, #16a34a)',
+                        color: 'white',
+                        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+                        position: 'relative'
+                    }}>
+                        <h1 style={{ fontSize: '1.25rem', fontWeight: 'bold', letterSpacing: '-0.025em' }}>KisanSpace</h1>
+                        <p style={{ color: '#bbf7d0', fontSize: '0.75rem', marginTop: '0.25rem', opacity: 0.9 }}>Satellite Intelligence for Farmers</p>
                     </div>
 
-                    <div className="p-6 space-y-6">
-                        <div className="border-b border-gray-100 pb-4">
-                            <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Analyzing Region</div>
-                            <h2 className="text-2xl font-bold text-gray-800 leading-tight">{location.name}</h2>
+                    {/* Content */}
+                    <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                        {/* Location Header */}
+                        <div style={{ borderBottom: '1px solid #f3f4f6', paddingBottom: '1rem' }}>
+                            <div style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem' }}>Analyzing Region</div>
+                            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1f2937', lineHeight: '1.25' }}>{location.name}</h2>
                             {data && location.center && (
-                                <div className="text-xs text-gray-400 mt-1 font-mono">
+                                <div style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '0.25rem', fontFamily: 'monospace' }}>
                                     Lat: {location.center[0].toFixed(2)} | Lon: {location.center[1].toFixed(2)}
                                 </div>
                             )}
                         </div>
 
                         {loading ? (
-                            <div className="flex flex-col items-center justify-center py-20 space-y-4">
-                                <div className="w-10 h-10 border-4 border-green-200 border-t-green-600 rounded-full animate-spin"></div>
-                                <p className="text-gray-500 font-medium animate-pulse">Processing Satellite Imagery...</p>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '5rem 0', gap: '1rem' }}>
+                                <div style={{ width: '2.5rem', height: '2.5rem', border: '4px solid #bbf7d0', borderTopColor: '#16a34a', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
+                                <p style={{ color: '#6b7280', fontWeight: 500, animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}>Processing Satellite Imagery...</p>
                             </div>
                         ) : data && (
                             <>
                                 {data.isEdgeCase ? (
-                                    <div className="p-6 rounded-xl bg-blue-50 border border-blue-200 text-center">
-                                        <div className="text-4xl mb-4">{data.type === 'water' ? '🌊' : '🏜️'}</div>
-                                        <div className="text-xl font-bold text-blue-900 mb-2">{data.action}</div>
-                                        <p className="text-blue-700">{data.message}</p>
+                                    <div style={{ padding: '1.5rem', borderRadius: '0.75rem', background: '#dbeafe', border: '1px solid #93c5fd', textAlign: 'center' }}>
+                                        <div style={{ fontSize: '2.25rem', marginBottom: '1rem' }}>{data.type === 'water' ? '🌊' : '🏜️'}</div>
+                                        <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1e3a8a', marginBottom: '0.5rem' }}>{data.action}</div>
+                                        <p style={{ color: '#1d4ed8' }}>{data.message}</p>
                                     </div>
                                 ) : (
                                     <>
-                                        <div className={`p-6 rounded-2xl border-l-4 shadow-sm ${data.color === '#e53e3e' ? 'bg-red-50 border-red-500' :
-                                            data.color === '#dd6b20' ? 'bg-orange-50 border-orange-500' :
-                                                data.color === '#3182ce' ? 'bg-blue-50 border-blue-500' :
-                                                    'bg-green-50 border-green-500'
-                                            } transition-all duration-500`}>
-                                            <div className="flex items-start gap-3">
-                                                <div className="text-3xl">
+                                        {/* Action Card */}
+                                        <div style={{
+                                            padding: '1.5rem',
+                                            borderRadius: '1rem',
+                                            borderLeft: '4px solid',
+                                            borderLeftColor: data.color === '#e53e3e' ? '#ef4444' : data.color === '#dd6b20' ? '#f97316' : data.color === '#3182ce' ? '#3b82f6' : '#22c55e',
+                                            background: data.color === '#e53e3e' ? '#fef2f2' : data.color === '#dd6b20' ? '#fff7ed' : data.color === '#3182ce' ? '#eff6ff' : '#f0fdf4',
+                                            boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                                            transition: 'all 500ms'
+                                        }}>
+                                            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                                                <div style={{ fontSize: '1.875rem' }}>
                                                     {data.color === '#e53e3e' ? '🚨' : data.color === '#dd6b20' ? '🐛' : data.color === '#3182ce' ? '☔' : '✅'}
                                                 </div>
                                                 <div>
-                                                    <div className="text-xs font-bold opacity-70 uppercase tracking-wider mb-1">Action Required</div>
-                                                    <div className="text-xl font-black mb-1 leading-tight text-gray-900">{data.action}</div>
-                                                    <div className="text-sm font-medium opacity-80">{data.recommendation}</div>
+                                                    <div style={{ fontSize: '0.75rem', fontWeight: 'bold', opacity: 0.7, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem' }}>Action Required</div>
+                                                    <div style={{ fontSize: '1.25rem', fontWeight: 900, marginBottom: '0.25rem', lineHeight: '1.25', color: '#111827' }}>{data.action}</div>
+                                                    <div style={{ fontSize: '0.875rem', fontWeight: 500, opacity: 0.8 }}>{data.recommendation}</div>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-5 rounded-xl border border-green-100">
-                                            <div className="text-xs font-bold text-green-700 uppercase tracking-wider mb-3">💰 Suggested Cash Crops</div>
-                                            <ul className="space-y-3">
+                                        {/* Crops Section */}
+                                        <div style={{ background: 'linear-gradient(to bottom right, #f0fdf4, #d1fae5)', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid #bbf7d0' }}>
+                                            <div style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#15803d', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.75rem' }}>💰 Suggested Cash Crops</div>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                                                 {data.recommended_crops.map((crop, idx) => (
-                                                    <li key={idx} className="flex items-center justify-between bg-white p-3 rounded-lg shadow-sm">
-                                                        <div className="flex items-center gap-3">
-                                                            <span className="text-xl">{crop.icon}</span>
-                                                            <span className="font-bold text-gray-800">{crop.name}</span>
+                                                    <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'white', padding: '0.75rem', borderRadius: '0.5rem', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)' }}>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                                            <span style={{ fontSize: '1.25rem' }}>{crop.icon}</span>
+                                                            <span style={{ fontWeight: 'bold', color: '#1f2937' }}>{crop.name}</span>
                                                         </div>
-                                                        <span className="text-xs font-semibold px-2 py-1 bg-green-100 text-green-800 rounded-full">
+                                                        <span style={{ fontSize: '0.75rem', fontWeight: 600, padding: '0.25rem 0.5rem', background: '#dcfce7', color: '#166534', borderRadius: '9999px' }}>
                                                             {crop.profit}
                                                         </span>
-                                                    </li>
+                                                    </div>
                                                 ))}
-                                            </ul>
+                                            </div>
                                         </div>
 
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                                                <div className="text-xs font-semibold text-gray-400 uppercase mb-1">Crop Vigor</div>
-                                                <div className={`text-3xl font-bold ${data.ndvi < 0.5 ? 'text-red-500' : 'text-green-600'}`}>
+                                        {/* Stats Grid */}
+                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
+                                            {/* NDVI */}
+                                            <div style={{ background: 'white', padding: '1rem', borderRadius: '0.75rem', border: '1px solid #f3f4f6', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)' }}>
+                                                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Crop Vigor</div>
+                                                <div style={{ fontSize: '1.875rem', fontWeight: 'bold', color: data.ndvi < 0.5 ? '#ef4444' : '#16a34a' }}>
                                                     {data.ndvi.toFixed(2)}
                                                 </div>
-                                                <div className="text-xs text-gray-400 mt-1">NDVI Index</div>
+                                                <div style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '0.25rem' }}>NDVI Index</div>
                                             </div>
 
-                                            <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                                                <div className="text-xs font-semibold text-gray-400 uppercase mb-1">Soil Moisture</div>
-                                                <div className="text-3xl font-bold text-gray-800">
-                                                    {(data.soil_moisture * 100).toFixed(0)}<span className="text-sm text-gray-400 font-normal">%</span>
+                                            {/* Soil Moisture */}
+                                            <div style={{ background: 'white', padding: '1rem', borderRadius: '0.75rem', border: '1px solid #f3f4f6', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)' }}>
+                                                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Soil Moisture</div>
+                                                <div style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#1f2937' }}>
+                                                    {(data.soil_moisture * 100).toFixed(0)}<span style={{ fontSize: '0.875rem', color: '#9ca3af', fontWeight: 'normal' }}>%</span>
                                                 </div>
-                                                <div className="w-full bg-gray-100 rounded-full h-1.5 mt-2">
-                                                    <div className="bg-blue-500 h-1.5 rounded-full" style={{ width: `${data.soil_moisture * 100}%` }}></div>
+                                                <div style={{ width: '100%', background: '#f3f4f6', borderRadius: '9999px', height: '0.375rem', marginTop: '0.5rem' }}>
+                                                    <div style={{ background: '#3b82f6', height: '0.375rem', borderRadius: '9999px', width: `${data.soil_moisture * 100}%` }}></div>
                                                 </div>
                                             </div>
 
-                                            <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                                                <div className="text-xs font-semibold text-gray-400 uppercase mb-1">Rain (48h)</div>
-                                                <div className="text-2xl font-bold text-gray-800">
-                                                    {data.rain_forecast} <span className="text-xs text-gray-400 font-normal">mm</span>
+                                            {/* Rainfall */}
+                                            <div style={{ background: 'white', padding: '1rem', borderRadius: '0.75rem', border: '1px solid #f3f4f6', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)' }}>
+                                                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Rain (48h)</div>
+                                                <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1f2937' }}>
+                                                    {data.rain_forecast} <span style={{ fontSize: '0.75rem', color: '#9ca3af', fontWeight: 'normal' }}>mm</span>
                                                 </div>
-                                                <div className="text-xs text-blue-500 mt-1">
+                                                <div style={{ fontSize: '0.75rem', color: '#3b82f6', marginTop: '0.25rem' }}>
                                                     {data.rain_forecast > 10 ? 'Rain Expected' : 'Dry Spell'}
                                                 </div>
                                             </div>
 
-                                            <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                                                <div className="text-xs font-semibold text-gray-400 uppercase mb-1">Drought Risk</div>
-                                                <div className={`text-2xl font-bold ${data.drought_risk > 5 ? 'text-red-600' : 'text-green-600'}`}>
-                                                    {data.drought_risk}<span className="text-sm text-gray-300">/10</span>
+                                            {/* Drought Risk */}
+                                            <div style={{ background: 'white', padding: '1rem', borderRadius: '0.75rem', border: '1px solid #f3f4f6', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)' }}>
+                                                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Drought Risk</div>
+                                                <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: data.drought_risk > 5 ? '#dc2626' : '#16a34a' }}>
+                                                    {data.drought_risk}<span style={{ fontSize: '0.875rem', color: '#d1d5db' }}>/10</span>
                                                 </div>
                                             </div>
 
-                                            <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm col-span-2">
-                                                <div className="flex justify-between items-center mb-1">
-                                                    <div className="text-xs font-semibold text-gray-400 uppercase">Pest Outbreak Probability</div>
-                                                    <div className={`font-bold ${data.pest_risk > 0.6 ? 'text-orange-500' : 'text-green-500'}`}>
+                                            {/* Pest Risk */}
+                                            <div style={{ background: 'white', padding: '1rem', borderRadius: '0.75rem', border: '1px solid #f3f4f6', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)', gridColumn: 'span 2' }}>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.25rem' }}>
+                                                    <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#9ca3af', textTransform: 'uppercase' }}>Pest Outbreak Probability</div>
+                                                    <div style={{ fontWeight: 'bold', color: data.pest_risk > 0.6 ? '#f97316' : '#22c55e' }}>
                                                         {(data.pest_risk * 100).toFixed(0)}%
                                                     </div>
                                                 </div>
-                                                <div className="w-full bg-gray-100 rounded-full h-2">
-                                                    <div className={`h-full rounded-full ${data.pest_risk > 0.6 ? 'bg-orange-500' : 'bg-green-500'}`} style={{ width: `${data.pest_risk * 100}%` }}></div>
+                                                <div style={{ width: '100%', background: '#f3f4f6', borderRadius: '9999px', height: '0.5rem' }}>
+                                                    <div style={{ height: '100%', borderRadius: '9999px', background: data.pest_risk > 0.6 ? '#f97316' : '#22c55e', width: `${data.pest_risk * 100}%` }}></div>
                                                 </div>
                                             </div>
                                         </div>
                                     </>
                                 )}
 
-                                <div className="mt-4 pt-6 border-t border-gray-100">
-                                    <button className="w-full bg-gray-900 hover:bg-black text-white py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-3 font-medium">
-                                        <span className="text-lg">📱</span>
+                                {/* Subscribe Button */}
+                                <div style={{ marginTop: '1rem', paddingTop: '1.5rem', borderTop: '1px solid #f3f4f6' }}>
+                                    <button style={{
+                                        width: '100%',
+                                        background: '#111827',
+                                        color: 'white',
+                                        padding: '0.875rem 1rem',
+                                        borderRadius: '0.75rem',
+                                        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                                        transition: 'all 0.2s',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        gap: '0.75rem',
+                                        fontWeight: 500,
+                                        border: 'none',
+                                        cursor: 'pointer'
+                                    }}>
+                                        <span style={{ fontSize: '1.125rem' }}>📱</span>
                                         <span>Subscribe for Alerts</span>
                                     </button>
                                 </div>
