@@ -1,55 +1,107 @@
-
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+import StarBackground from './components/StarBackground';
+import GlassCard from './components/GlassCard';
+import './Choose.css';
 
 export default function Choose() {
   const navigate = useNavigate();
+
+  const options = [
+    {
+      title: 'Kids',
+      description: 'Fun stories, animations & interactive games',
+      path: '/kids',
+      icon: '🚀',
+      gradient: 'purple',
+      features: ['Animated Stories', 'Space Games', 'Planet Adventures']
+    },
+    {
+      title: 'Explorers',
+      description: 'Deep space exploration & real-time data',
+      path: '/others',
+      icon: '🌌',
+      gradient: 'pink',
+      features: ['Live Events', 'Data Analysis', 'Cosmic Insights']
+    }
+  ];
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-gray-900 via-purple-900 to-black text-white px-6">
+    <div className="choose-container">
+      <StarBackground density={150} shooting={true} />
 
-      <h1 className="text-5xl font-extrabold mb-12 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 animate-pulse">
-        Choose Your Experience
-      </h1>
+      <div className="choose-content">
+        {/* Header */}
+        <div className="choose-header">
+          <div className="choose-eyebrow">
+            <span className="eyebrow-line"></span>
+            <span className="eyebrow-text">SELECT YOUR PATH</span>
+            <span className="eyebrow-line"></span>
+          </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          <h1 className="choose-title gradient-text">
+            Choose Your
+            <br />
+            Experience
+          </h1>
 
-        {/* Kids Card */}
-        <div
-          className="cursor-pointer group relative w-72 h-72 rounded-3xl bg-gradient-to-br from-blue-500/30 to-purple-600/30 backdrop-blur-xl border border-white/20 shadow-xl hover:scale-110 transition-all p-6 flex flex-col items-center justify-center" onClick={() => navigate("/kids")}
-        >
-          <div className="absolute inset-0 rounded-3xl bg-blue-500/20 blur-2xl opacity-0 group-hover:opacity-100 transition"></div>
-
-          <img
-            src="https://cdn-icons-png.flaticon.com/512/201/201818.png"
-            alt="Kids"
-            className="w-24 h-24 mb-4 group-hover:scale-110 transition"
-          />
-
-          <h2 className="text-3xl font-bold">Kids</h2>
-          <p className="text-gray-300 mt-2 text-center">
-            Fun stories & animations
+          <p className="choose-subtitle">
+            Embark on your cosmic journey tailored to your curiosity
           </p>
         </div>
 
-        {/* Others Card */}
-        <div
-          className="cursor-pointer group relative w-72 h-72 rounded-3xl bg-gradient-to-br from-pink-500/30 to-orange-500/30 backdrop-blur-xl border border-white/20 shadow-xl hover:scale-110 transition-all p-6 flex flex-col items-center justify-center" onClick={() => navigate("/others")}
-        >
-          <div className="absolute inset-0 rounded-3xl bg-pink-500/20 blur-2xl opacity-0 group-hover:opacity-100 transition"></div>
+        {/* Cards Grid */}
+        <div className="choose-cards">
+          {options.map((option, index) => (
+            <GlassCard
+              key={option.path}
+              onClick={() => navigate(option.path)}
+              variant={option.gradient}
+              className={`choose-card animate-card-${index}`}
+            >
+              {/* Icon */}
+              <div className="card-icon">{option.icon}</div>
 
-          <img
-            src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-            alt="Others"
-            className="w-24 h-24 mb-4 group-hover:scale-110 transition"
-          />
+              {/* Title */}
+              <h2 className="card-title">{option.title}</h2>
 
-          <h2 className="text-3xl font-bold">Others</h2>
-          <p className="text-gray-300 mt-2 text-center">
-            General space exploration
-          </p>
+              {/* Description */}
+              <p className="card-description">{option.description}</p>
+
+              {/* Features */}
+              <ul className="card-features">
+                {option.features.map((feature, i) => (
+                  <li key={i} className="card-feature">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path
+                        d="M13 4L6 11L3 8"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+
+              {/* Arrow indicator */}
+              <div className="card-arrow">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M13 7l5 5m0 0l-5 5m5-5H6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+            </GlassCard>
+          ))}
         </div>
 
-
-
+        {/* Back button */}
+        <button className="back-button" onClick={() => navigate('/')}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M19 12H5M12 19l-7-7 7-7" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <span>Back to Home</span>
+        </button>
       </div>
     </div>
   );

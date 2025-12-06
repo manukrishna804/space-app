@@ -4,10 +4,10 @@ import Choose from "./Choose.jsx";
 import Kids from "./kids.jsx";
 import Rocket from "./kids_section/rocket.jsx";
 import UpcomingEvents from "./UpcomingEvents.jsx";
-import SpaceVideoSunny from "./kids_section/SpaceVideoQuizSunny.jsx";
-import SpaceHuman from "./kids_section/SpaceLearningFlow.jsx";
+import SpaceVideoSunny from "./kids_section/Sunny.jsx";
+import SpaceHuman from "./kids_section/Human.jsx";
 import OtherHome from "./others_homepage.jsx";
-import FarmerAssistApp from "../../farmer-assist/frontend/src/App.jsx";
+import FarmerAssist from "./FarmerAssist.jsx";
 
 export default function App() {
   return (
@@ -20,7 +20,7 @@ export default function App() {
       <Route path="/sunny" element={<SpaceVideoSunny />} />
       <Route path="/human" element={<SpaceHuman />} />
       <Route path="/others" element={<OtherHome />} />
-      <Route path="/farmer-assist" element={<FarmerAssistApp />} />
+      <Route path="/farmer-assist" element={<FarmerAssist />} />
 
     </Routes>
   );

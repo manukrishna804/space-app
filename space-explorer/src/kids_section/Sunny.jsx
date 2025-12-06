@@ -3,7 +3,7 @@ import SpaceQuest from "../games/SpaceQuest/SpaceQuest";
 import Jigsaw from "../games/Jigsaw/Jigsaw";
 import DragPlanets from "../games/DragPlanets/DragPlanets";
 
-export default function Rocket() {
+export default function SpaceVideoSunny() {
   // Views: 'video' | 'quiz' | 'games' | 'sorter-game'
   const [view, setView] = useState("video");
 
@@ -15,7 +15,6 @@ export default function Rocket() {
   const audioCtx = useRef(null);
 
   useEffect(() => {
-    // Initialize Audio Context on first interaction if possible, or just lazily
     return () => {
       if (audioCtx.current) {
         audioCtx.current.close().catch(() => { });
@@ -66,9 +65,8 @@ export default function Rocket() {
       <Starfield />
       <div className="content-container">
 
-        {/* Navigation Bar / Header */}
         <header className="app-header">
-          <h1>Kids in Space</h1>
+          <h1>Kids in Space: The Solar System</h1>
           <nav className="nav-pills">
             <button
               className={view === 'video' ? 'active' : ''}
@@ -100,7 +98,6 @@ export default function Rocket() {
             <VideoSection
               onComplete={() => {
                 setQuizUnlocked(true);
-                // Optional auto-navigation or notification could go here
               }}
               onNext={() => setView('quiz')}
               quizUnlocked={quizUnlocked}
@@ -152,8 +149,8 @@ export default function Rocket() {
           --glass: rgba(255, 255, 255, 0.1);
           --glass-hover: rgba(255, 255, 255, 0.15);
           --border: rgba(255, 255, 255, 0.2);
-          --primary: #5ecbff;
-          --secondary: #e0b0ff;
+          --primary: #facc15; /* Yellow/Gold for Sunny */
+          --secondary: #fb923c;
           --text: #ffffff;
           --success: #4ade80;
           --error: #fb7185;
@@ -197,7 +194,7 @@ export default function Rocket() {
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           margin: 0;
-          text-shadow: 0 0 30px rgba(94, 203, 255, 0.3);
+          text-shadow: 0 0 30px rgba(250, 204, 21, 0.3);
         }
 
         .nav-pills {
@@ -225,7 +222,7 @@ export default function Rocket() {
         .nav-pills button.active {
           background: var(--primary);
           color: #000;
-          box-shadow: 0 0 20px rgba(94, 203, 255, 0.4);
+          box-shadow: 0 0 20px rgba(250, 204, 21, 0.4);
         }
 
         .nav-pills button:disabled {
@@ -253,8 +250,8 @@ export default function Rocket() {
         }
 
         .btn-primary {
-          background: linear-gradient(135deg, var(--primary), #3b82f6);
-          color: white;
+          background: linear-gradient(135deg, var(--primary), var(--secondary));
+          color: #000;
           border: none;
           padding: 12px 24px;
           font-size: 1.1rem;
@@ -266,7 +263,7 @@ export default function Rocket() {
         
         .btn-primary:hover {
           transform: translateY(-2px);
-          box-shadow: 0 10px 20px rgba(94, 203, 255, 0.3);
+          box-shadow: 0 10px 20px rgba(250, 204, 21, 0.3);
         }
 
         /* VIDEO */
@@ -315,6 +312,7 @@ export default function Rocket() {
         .option-label input {
           width: 20px;
           height: 20px;
+          accent-color: var(--primary);
         }
 
         /* GAME MENU */
@@ -344,14 +342,13 @@ export default function Rocket() {
         .game-card:hover {
           transform: translateY(-5px) scale(1.02);
           border-color: var(--primary);
-          box-shadow: 0 15px 30px rgba(94, 203, 255, 0.2);
+          box-shadow: 0 15px 30px rgba(250, 204, 21, 0.2);
         }
 
         .game-details h3 { margin: 0; font-size: 1.5rem; }
         .game-details p { margin: 5px 0 0; opacity: 0.7; }
         
-        /* Game Specific Colors */
-        .g-sorter { background: linear-gradient(to bottom right, rgba(94, 203, 255, 0.1), rgba(94, 203, 255, 0.2)); }
+        .g-sorter { background: linear-gradient(to bottom right, rgba(250, 204, 21, 0.1), rgba(250, 204, 21, 0.2)); }
         .g-jump { background: linear-gradient(to bottom right, rgba(224, 176, 255, 0.1), rgba(224, 176, 255, 0.2)); }
         .g-catch { background: linear-gradient(to bottom right, rgba(255, 255, 100, 0.1), rgba(255, 255, 100, 0.2)); }
         .g-dodge { background: linear-gradient(to bottom right, rgba(255, 100, 100, 0.1), rgba(255, 100, 100, 0.2)); }
@@ -418,10 +415,10 @@ function Starfield() {
         .starfield {
           position: fixed; inset: 0; pointer-events: none;
           background-image: 
-            radial-gradient(1px 1px at 10% 10%, white, transparent),
-            radial-gradient(2px 2px at 20% 40%, white, transparent),
-            radial-gradient(1px 1px at 50% 50%, white, transparent),
-            radial-gradient(2px 2px at 80% 80%, white, transparent);
+            radial-gradient(1px 1px at 15% 15%, #fb923c, transparent),
+            radial-gradient(2px 2px at 30% 60%, white, transparent),
+            radial-gradient(1px 1px at 60% 30%, white, transparent),
+            radial-gradient(2px 2px at 80% 80%, #fb923c, transparent);
           opacity: 0.5;
         }
       `}</style>
@@ -439,14 +436,14 @@ function VideoSection({ onComplete, onNext, quizUnlocked }) {
   return (
     <div className="glass-card fade-in">
       <h2>1. Watch the Story</h2>
-      <p style={{ marginBottom: '1rem', opacity: 0.8 }}>Join Mila as she enters Space Town! Watch carefully to answer the quiz.</p>
+      <p style={{ marginBottom: '1rem', opacity: 0.8 }}>Meet Sunny the Sun and the rest of the Solar System family!</p>
 
       <div className="video-wrapper">
         <video
           ref={vidRef}
           controls
           onEnded={handleEnded}
-          src="rocket.mp4" /* Ensure this path is correct in your public folder */
+          src="/meet_planets.mp4"
         >
           Your browser does not support the video tag.
         </video>
@@ -470,33 +467,33 @@ function QuizSection({ onPass, onNext, playSound }) {
   const questions = [
     {
       id: 0,
-      text: "Why did everything float when Mila entered Space Town?",
-      options: ["The fans were blowing", "The floor was slippery", "There was no gravity", "The walls were moving"],
+      text: "Who is the leader of the Solar System in the story?",
+      options: ["Jupiter", "Earth", "Sunny the Sun", "Mars"],
       correctIndex: 2
     },
     {
       id: 1,
-      text: "How did astronauts eat their food?",
-      options: ["On big plates", "With forks and knives", "Cooked on a stove", "Floating blobs from pouches"],
-      correctIndex: 3
-    },
-    {
-      id: 2,
-      text: "Why do astronauts zip themselves into sleeping bags?",
-      options: ["So they don't float away", "To stay warm", "The room is cold", "It's more comfortable"],
-      correctIndex: 0
-    },
-    {
-      id: 3,
-      text: "How does the space toilet work?",
-      options: ["Running water", "Air suction", "Flushing", "Opening a hole to space"],
+      text: "Which planet is the closest to the Sun?",
+      options: ["Neptune", "Mercury", "Venus", "Uranus"],
       correctIndex: 1
     },
     {
+      id: 2,
+      text: "Which planet has thick clouds that trap heat?",
+      options: ["Saturn", "Venus", "Mars", "Earth"],
+      correctIndex: 1
+    },
+    {
+      id: 3,
+      text: "Which planet has a giant storm called the Great Red Spot?",
+      options: ["Jupiter", "Pluto", "Earth", "Neptune"],
+      correctIndex: 0
+    },
+    {
       id: 4,
-      text: "Why do astronauts exercise daily?",
-      options: ["To be faster", "Boredom", "To win competitions", "Muscles get weak without gravity"],
-      correctIndex: 3
+      text: "What does the Moon do in the story?",
+      options: ["Lights up the Sun", "Orbits around Mars", "Goes around Earth", "Spins around Jupiter"],
+      correctIndex: 2
     }
   ];
 
@@ -553,7 +550,7 @@ function QuizSection({ onPass, onNext, playSound }) {
                 {q.options.map((opt, oIdx) => {
                   let className = "option-label";
                   if (submitted) {
-                    if (oIdx === q.correctIndex) className += " correct-opt"; // Highlight correct
+                    if (oIdx === q.correctIndex) className += " correct-opt";
                     else if (userAnswer === oIdx) className += " wrong-opt";
                   }
 
@@ -585,7 +582,7 @@ function QuizSection({ onPass, onNext, playSound }) {
         )}
 
         {submitted && score < 3 && (
-          <button className="btn-primary" style={{ filter: 'hue-rotate(180deg)' }} onClick={resetQuiz}>Try Again</button>
+          <button className="btn-primary" style={{ filter: 'grayscale(1)' }} onClick={resetQuiz}>Try Again</button>
         )}
 
         {submitted && score >= 3 && (
@@ -599,14 +596,14 @@ function QuizSection({ onPass, onNext, playSound }) {
 function GameMenu({ onSelectGame }) {
   return (
     <div className="glass-card" style={{ border: 'none', background: 'transparent', boxShadow: 'none' }}>
-      <h2 style={{ textAlign: 'center', marginBottom: '2rem', fontSize: '2.5rem' }}>Space Arcade</h2>
+      <h2 style={{ textAlign: 'center', marginBottom: '2rem', fontSize: '2.5rem' }}>Solar Arcade</h2>
       <div className="game-grid">
 
         <div className="game-card g-sorter" onClick={() => onSelectGame('sorter')}>
-          <div className="icon">🪐</div>
+          <div className="icon">☀️</div>
           <div className="game-details">
             <h3>Size Sorter</h3>
-            <p>Find the biggest planet!</p>
+            <p>Order the planets!</p>
           </div>
         </div>
 
@@ -649,7 +646,6 @@ function SpaceSorterGame({ onBack, playSound }) {
   const [message, setMessage] = useState("Tap the LARGEST planet!");
   const [streak, setStreak] = useState(0);
 
-  // Generate planets on mount
   useEffect(() => {
     generateLevel();
   }, []);
@@ -660,7 +656,6 @@ function SpaceSorterGame({ onBack, playSound }) {
       { size: 'planet-md', label: 'Med', correct: false },
       { size: 'planet-lg', label: 'Big', correct: true },
     ];
-    // Shuffle
     const shuffled = [...definitions].sort(() => Math.random() - 0.5);
     setPlanets(shuffled);
     setMessage("Tap the LARGEST planet!");
@@ -686,7 +681,7 @@ function SpaceSorterGame({ onBack, playSound }) {
         <span style={{ opacity: 0.6 }}>Streak: {streak}</span>
       </div>
 
-      <h2>Space Size Sorter</h2>
+      <h2>Planet Sizer</h2>
       <p style={{ fontSize: '1.5rem', fontWeight: 'bold', minHeight: '2rem' }}>{message}</p>
 
       <div className="planet-row">
@@ -695,7 +690,6 @@ function SpaceSorterGame({ onBack, playSound }) {
             key={i}
             className={`planet-btn ${p.size}`}
             onClick={(e) => {
-              // Add simple visual feedback on click
               e.currentTarget.style.transform = "scale(0.9)";
               setTimeout(() => e.currentTarget.style.transform = "scale(1)", 100);
               handlePlanetClick(p.correct);

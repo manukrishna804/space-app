@@ -1,204 +1,212 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import './EventDetailsModal.css';
 
 export default function EventDetailsModal({ event, onClose }) {
-    const [timeLeft, setTimeLeft] = useState('');
-
-    // Countdown logic for launches or upcoming events
-    useEffect(() => {
-        if (!event || !event.startTime) return;
-
-        const interval = setInterval(() => {
-            const now = new Date();
-            const eventDate = new Date(event.startTime);
-            const diff = eventDate - now;
-
-            if (diff <= 0) {
-                setTimeLeft('HAPPENING NOW / PAST');
-                return;
-            }
-
-            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
-            const m = Math.floor((diff / (1000 * 60)) % 60);
-            const s = Math.floor((diff / 1000) % 60);
-
-            setTimeLeft(`${d}d ${h}h ${m}m ${s}s`);
-        }, 1000);
-
-        return () => clearInterval(interval);
-    }, [event]);
-
     if (!event) return null;
 
-    // --- RENDERING LOGIC ---
+    const date = new Date(event.startTime);
+    const dateStr = isNaN(date.getTime()) ? 'Date TBD' : date.toLocaleDateString(undefined, {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+    });
+    const timeStr = isNaN(date.getTime()) ? '' : date.toLocaleTimeString(undefined, {
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZoneName: 'short'
+    });
 
-    // 1. LAUNCH VIEW
-    // If it's a launch, we use the specific breakdown
-    if (event.type === 'launch' || event.rawLaunch) {
-        const launch = event.rawLaunch || event;
-        const mission = launch.mission || {};
-        const rocket = launch.rocket?.configuration || {};
-        const pad = launch.pad || {};
-        const image = launch.image || launch.rocket?.configuration?.image_url;
-
-        return (
-            <ModalShell onClose={onClose} image={image} title={launch.title} subtitle={launch.type} tagline={`T-MINUS: ${timeLeft}`}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="space-y-6">
-                        <Section title="🎯 Mission Briefing">
-                            <p className="text-slate-300 leading-relaxed text-sm md:text-base">
-                                {mission.description || "No mission description available for this launch."}
-                            </p>
-                        </Section>
-                        <Section title="🚀 The Rocket">
-                            <InfoCard title={rocket.name || "Unknown Rocket"}>
-                                <p>Family: {rocket.family || "N/A"}</p>
-                                <p>Variant: {rocket.variant || "N/A"}</p>
-                            </InfoCard>
-                        </Section>
-                    </div>
-                    <div className="space-y-6">
-                        <Section title="📍 Launch Site">
-                            <InfoCard title={pad.name || "Unknown Pad"}>
-                                <p className="text-sm text-slate-400 mt-1">{pad.location?.name || "Unknown Location"}</p>
-                                <a href={`https://www.google.com/maps/search/?api=1&query=${pad.latitude},${pad.longitude}`} target="_blank" rel="noreferrer" className="inline-block mt-3 text-xs text-blue-400 hover:text-blue-300">View on Map →</a>
-                            </InfoCard>
-                        </Section>
-                        <Section title="🏢 Agency">
-                            <div className="flex items-center gap-4 bg-slate-800/50 rounded-xl p-4 border border-slate-700">
-                                {launch.agency?.logo_url && <img src={launch.agency.logo_url} alt="Logo" className="h-10 w-10 object-contain bg-white rounded-full p-1" />}
-                                <div>
-                                    <p className="text-white font-medium">{launch.agency?.name || "Unknown Agency"}</p>
-                                    <p className="text-xs text-slate-400">{launch.agency?.type || "Organization"}</p>
-                                </div>
-                            </div>
-                        </Section>
-                    </div>
-                </div>
-                <div className="mt-8 flex justify-end gap-3">
-                    {launch.webcast_live && (
-                        <a href={launch.webcast_live} target="_blank" rel="noreferrer" className="btn-primary bg-red-600 hover:bg-red-500 shadow-red-500/20">
-                            <span className="w-2 h-2 rounded-full bg-white animate-pulse mr-2" /> Watch Live
-                        </a>
-                    )}
-                </div>
-            </ModalShell>
-        );
-    }
-
-    // 2. GENERIC EVENT VIEW (Agency, Meteor, Eclipse)
-    const isAgency = event.type === 'agency_event';
-    const displayImage = event.image || (isAgency ? 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1080' : 'https://images.unsplash.com/photo-1532003885409-fea0d4a77881?q=80&w=1080');
+    // Determine badge color
+    let badgeClass = 'modal-badge-default';
+    if (event.type === 'launch') badgeClass = 'modal-badge-green';
+    else if (event.type === 'meteor_shower') badgeClass = 'modal-badge-yellow';
+    else if (event.type === 'eclipse') badgeClass = 'modal-badge-orange';
+    else if (event.type === 'agency_event') badgeClass = 'modal-badge-purple';
 
     return (
-        <ModalShell onClose={onClose} image={displayImage} title={event.title} subtitle={isAgency ? "Agency Event" : "Celestial Event"} tagline={isAgency ? "HAPPENING SOON" : `DATE: ${new Date(event.startTime).toLocaleDateString()}`}>
-            <div className="max-w-3xl mx-auto space-y-8">
+        <div className="modal-backdrop" onClick={onClose}>
+            <div className="modal-container" onClick={(e) => e.stopPropagation()}>
+                {/* Close button */}
+                <button className="modal-close" onClick={onClose} aria-label="Close modal">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                </button>
 
-                {/* Description */}
-                <Section title={isAgency ? "📰 Event Details" : "✨ Phenomenon Details"}>
-                    <p className="text-slate-300 leading-relaxed text-lg">
-                        {event.description || "Detailed information for this event is currently not available, but it is definitely worth watching the skies!"}
-                    </p>
-                </Section>
-
-                {/* Video Embed */}
-                {event.video_url && (
-                    <div className="rounded-xl overflow-hidden shadow-2xl shadow-black/50 border border-slate-700">
-                        <iframe
-                            src={event.video_url.replace('watch?v=', 'embed/')}
-                            title="Event Video"
-                            className="w-full aspect-video"
-                            allowFullScreen
-                        />
+                {/* Image Header */}
+                {event.image && (
+                    <div className="modal-image-container">
+                        <div className="modal-image-overlay"></div>
+                        <img src={event.image} alt={event.title} className="modal-image" />
                     </div>
                 )}
 
-                {/* Location & Meta */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {event.location && (
-                        <Section title="📍 Location / Visibility">
-                            <p className="text-slate-300">{event.location}</p>
-                        </Section>
+                {/* Content */}
+                <div className="modal-content">
+                    {/* Badge */}
+                    <div className={`modal-badge ${badgeClass}`}>
+                        {event.type === 'launch' && '🚀 Launch'}
+                        {event.type === 'meteor_shower' && '☄️ Meteor Shower'}
+                        {event.type === 'eclipse' && '🌑 Eclipse'}
+                        {event.type === 'agency_event' && '🏢 Event'}
+                        {!['launch', 'meteor_shower', 'eclipse', 'agency_event'].includes(event.type) && event.type}
+                    </div>
+
+                    {/* Title */}
+                    <h2 className="modal-title">{event.title}</h2>
+
+                    {/* Date & Time */}
+                    <div className="modal-datetime">
+                        <div className="modal-date">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                <line x1="16" y1="2" x2="16" y2="6" />
+                                <line x1="8" y1="2" x2="8" y2="6" />
+                                <line x1="3" y1="10" x2="21" y2="10" />
+                            </svg>
+                            <span>{dateStr}</span>
+                        </div>
+                        {timeStr && (
+                            <div className="modal-time">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="M12 6v6l4 2" />
+                                </svg>
+                                <span>{timeStr}</span>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Info Grid */}
+                    <div className="modal-info-grid">
+                        {event.location && (
+                            <div className="modal-info-item">
+                                <div className="modal-info-label">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                        <circle cx="12" cy="10" r="3" />
+                                    </svg>
+                                    Location
+                                </div>
+                                <div className="modal-info-value">{event.location}</div>
+                            </div>
+                        )}
+
+                        {event.agency && (
+                            <div className="modal-info-item">
+                                <div className="modal-info-label">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                        <circle cx="9" cy="7" r="4" />
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                    </svg>
+                                    Agency
+                                </div>
+                                <div className="modal-info-value">{event.agency}</div>
+                            </div>
+                        )}
+
+                        {event.source && (
+                            <div className="modal-info-item">
+                                <div className="modal-info-label">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <path d="M12 16v-4" />
+                                        <path d="M12 8h.01" />
+                                    </svg>
+                                    Source
+                                </div>
+                                <div className="modal-info-value">{event.source}</div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Description */}
+                    {event.description && (
+                        <div className="modal-section">
+                            <h3 className="modal-section-title">Details</h3>
+                            <p className="modal-description">{event.description}</p>
+                        </div>
                     )}
-                    {event.agency && (
-                        <Section title="🏢 Organized By">
-                            <p className="text-slate-300">{event.agency}</p>
-                        </Section>
+
+                    {/* Launch-specific details */}
+                    {event.type === 'launch' && event.rawLaunch && (
+                        <div className="modal-section">
+                            <h3 className="modal-section-title">Mission Information</h3>
+                            <div className="modal-mission-grid">
+                                {event.rawLaunch.mission?.name && (
+                                    <div className="modal-mission-item">
+                                        <span className="modal-mission-label">Mission:</span>
+                                        <span className="modal-mission-value">{event.rawLaunch.mission.name}</span>
+                                    </div>
+                                )}
+                                {event.rawLaunch.rocket?.configuration?.name && (
+                                    <div className="modal-mission-item">
+                                        <span className="modal-mission-label">Rocket:</span>
+                                        <span className="modal-mission-value">{event.rawLaunch.rocket.configuration.name}</span>
+                                    </div>
+                                )}
+                                {event.rawLaunch.status?.name && (
+                                    <div className="modal-mission-item">
+                                        <span className="modal-mission-label">Status:</span>
+                                        <span className="modal-mission-value">{event.rawLaunch.status.name}</span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     )}
-                </div>
 
-                {/* External Links */}
-                <div className="pt-6 border-t border-slate-700/50 flex flex-wrap gap-4">
-                    {event.news_url && (
-                        <a href={event.news_url} target="_blank" rel="noreferrer" className="btn-secondary">
-                            Read Original Article ↗
-                        </a>
-                    )}
-                    {event.detailsUrl && (
-                        <a href={event.detailsUrl} target="_blank" rel="noreferrer" className="btn-secondary">
-                            Source Data ↗
-                        </a>
-                    )}
-                </div>
-            </div>
-        </ModalShell>
-    );
-}
-
-// --- SUB-COMPONENTS FOR CONSISTENCY ---
-
-function ModalShell({ onClose, image, title, subtitle, tagline, children }) {
-    return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md animate-in fade-in duration-300">
-            <div className="relative w-full max-w-5xl max-h-[90vh] overflow-y-auto bg-slate-950 rounded-2xl border border-slate-800 shadow-2xl shadow-blue-900/10">
-
-                <button onClick={onClose} className="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/40 hover:bg-slate-800 text-white transition-colors backdrop-blur-sm">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                </button>
-
-                {/* Hero */}
-                <div className="relative h-72 w-full overflow-hidden shrink-0">
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent z-10" />
-                    <img src={image} alt={title} className="w-full h-full object-cover" />
-                    <div className="absolute bottom-6 left-6 right-6 z-20">
-                        <span className="inline-block px-3 py-1 mb-2 text-xs font-bold tracking-wider text-blue-200 uppercase bg-blue-900/50 backdrop-blur-md rounded-full border border-blue-500/30">
-                            {subtitle}
-                        </span>
-                        <h2 className="text-3xl md:text-5xl font-bold text-white mb-2 leading-tight drop-shadow-lg">
-                            {title}
-                        </h2>
-                        <p className="text-blue-300 font-mono text-lg font-medium drop-shadow-md">
-                            {tagline}
-                        </p>
+                    {/* Links */}
+                    <div className="modal-actions">
+                        {event.detailsUrl && (
+                            <a
+                                href={event.detailsUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="modal-link-button"
+                            >
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                                    <polyline points="15 3 21 3 21 9" />
+                                    <line x1="10" y1="14" x2="21" y2="3" />
+                                </svg>
+                                More Details
+                            </a>
+                        )}
+                        {event.news_url && (
+                            <a
+                                href={event.news_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="modal-link-button"
+                            >
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                    <polyline points="14 2 14 8 20 8" />
+                                    <line x1="16" y1="13" x2="8" y2="13" />
+                                    <line x1="16" y1="17" x2="8" y2="17" />
+                                    <polyline points="10 9 9 9 8 9" />
+                                </svg>
+                                News Article
+                            </a>
+                        )}
+                        {event.video_url && (
+                            <a
+                                href={event.video_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="modal-link-button"
+                            >
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <polygon points="5 3 19 12 5 21 5 3" />
+                                </svg>
+                                Watch Video
+                            </a>
+                        )}
                     </div>
                 </div>
-
-                {/* Content */}
-                <div className="p-6 md:p-10">
-                    {children}
-                </div>
-            </div>
-        </div>
-    );
-}
-
-function Section({ title, children }) {
-    return (
-        <section>
-            <h3 className="text-xl font-semibold text-white mb-3 flex items-center gap-2">
-                {title}
-            </h3>
-            {children}
-        </section>
-    );
-}
-
-function InfoCard({ title, children }) {
-    return (
-        <div className="bg-slate-900/50 rounded-xl p-5 border border-slate-800 hover:border-slate-700 transition-colors">
-            <p className="text-white font-medium text-lg mb-2">{title}</p>
-            <div className="text-sm text-slate-400 space-y-1">
-                {children}
             </div>
         </div>
     );

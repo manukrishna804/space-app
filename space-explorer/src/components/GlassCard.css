@@ -1,0 +1,75 @@
+.glass-card {
+    position: relative;
+    border-radius: var(--radius-2xl);
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    overflow: hidden;
+    transition: all var(--transition-base);
+}
+
+.glass-card-clickable {
+    cursor: pointer;
+}
+
+.glass-card-clickable:focus-visible {
+    outline: 2px solid var(--color-primary-400);
+    outline-offset: 2px;
+}
+
+/* Glow background */
+.glass-card-glow {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity var(--transition-base);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.glass-card-content {
+    position: relative;
+    z-index: 2;
+}
+
+/* Hover effect */
+.glass-card-hover:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 48px 0 rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.glass-card-hover:hover .glass-card-glow {
+    opacity: 0.15;
+}
+
+/* Variants */
+.glass-card-default .glass-card-glow {
+    background: radial-gradient(circle at 50% 0%, var(--color-primary-500), transparent 70%);
+}
+
+.glass-card-purple {
+    border-color: rgba(147, 51, 234, 0.2);
+}
+
+.glass-card-purple .glass-card-glow {
+    background: radial-gradient(circle at 50% 0%, var(--color-primary-600), transparent 70%);
+}
+
+.glass-card-pink {
+    border-color: rgba(236, 72, 153, 0.2);
+}
+
+.glass-card-pink .glass-card-glow {
+    background: radial-gradient(circle at 50% 0%, var(--color-secondary-600), transparent 70%);
+}
+
+.glass-card-blue {
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
+.glass-card-blue .glass-card-glow {
+    background: radial-gradient(circle at 50% 0%, var(--color-accent-600), transparent 70%);
+}
